@@ -1,0 +1,99 @@
+# indo-audio-transcribe — .gitignore
+#
+# Three things must never be committed here: recording audio, transcripts, and
+# local machine state. A recording is somebody's speech and a transcript is their
+# words; both are private by default, which is why nothing in this category has a
+# tracked exception.
+
+# ---------------------------------------------------------------- audio input
+# Users' recordings. The repo ships none, and the parity suite reads its reference
+# from the environment instead (MYTRANSCRIBE_REFERENCE_AUDIO).
+*.mp3
+*.m4a
+*.aac
+*.wav
+*.flac
+*.ogg
+*.opus
+*.wma
+*.amr
+*.mp4
+*.mkv
+*.mov
+*.webm
+*.avi
+
+# Generated audio: the 16 kHz mono working file, and kept copies of it.
+*.16k.wav
+
+# Reference pair for the slow parity suite, when placed in the repo root.
+reference.mp3
+reference.txt
+
+# ------------------------------------------------------------- transcripts out
+# Transcripts are output, not source. Keep the tree free of them.
+*.srt
+*.vtt
+hasil.*
+transkrip.*
+
+# Private scratch space for personal recordings kept during development.
+.private-backup/
+
+# ----------------------------------------------------------- python / runtime
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# --------------------------------------------------- managed app process state
+# `serve.sh` writes its pid and log here; Jobs keep temp audio here.
+.run/
+.jobs/
+*.pid
+*.log
+
+# --------------------------------------------------------------- local config
+# Nobody's personal environment settings belong in a shared repo.
+.env
+.env.*
+!.env.example
+
+# ------------------------------------------------------------------ editor/os
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+!.vscode/extensions.json
+
+# --------------------------------------------------------------- issue tracker
+# Local Beads/Dolt state, if used. The tracker is a working tool, not the product.
+.beads/
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/
+.scratch/
+
+# -------------------------------------------------------- usability fixtures
+# Derived from a user-supplied recording by a fixture script, never committed.
+.uat/

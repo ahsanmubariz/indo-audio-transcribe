@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transkripsi rekaman</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<main>
+  <header>
+    <h1>Transkripsi rekaman</h1>
+    <p class="lede">Ubah rekaman Bahasa Indonesia menjadi teks, langsung di mesin ini.</p>
+    <p class="model-note" id="model-note">Model: Bahasa Indonesia saja. Tidak ada pilihan bahasa.</p>
+    <p class="retention-note">Hasil bisa diunduh selama 60 menit setelah selesai, lalu kedaluwarsa.
+      Tidak ada yang disimpan: berkas asli dihapus, dan hasil yang sudah kedaluwarsa
+      hanya bisa didapat dengan mentranskripsi ulang.</p>
+  </header>
+
+  <form id="upload-form" class="drop" novalidate>
+    <label class="drop-label" for="file">
+      <span class="drop-title">Pilih rekaman</span>
+      <span class="drop-hint">Audio atau video. Durasi dan perkiraan waktunya
+        ditampilkan sebelum Anda memulai.</span>
+    </label>
+    <input id="file" name="file" type="file" accept="audio/*,video/*" required>
+
+    <dl class="inspect" id="inspect" hidden>
+      <dt>Berkas</dt><dd id="inspect-name"></dd>
+      <dt>Durasi</dt><dd id="inspect-duration"></dd>
+      <dt>Format</dt><dd id="inspect-kind"></dd>
+      <dt>Perkiraan waktu</dt><dd id="inspect-estimate"></dd>
+    </dl>
+
+    <fieldset class="formats">
+      <legend>Format hasil</legend>
+      <label><input type="radio" name="format" value="txt" checked> .txt &mdash; teks saja</label>
+      <label><input type="radio" name="format" value="srt"> .srt &mdash; subtitle</label>
+      <label><input type="radio" name="format" value="vtt"> .vtt &mdash; subtitle web</label>
+      <label><input type="radio" name="format" value="json"> .json &mdash; teks + waktu kata</label>
+    </fieldset>
+
+    <button type="submit" id="start">Mulai transkripsi</button>
+    <p class="hint" id="cancel-note">Membatalkan proses yang sedang berjalan butuh waktu sampai 30 detik.</p>
+    <p class="error" id="upload-error" role="alert" hidden></p>
+  </form>
+
+  <section id="jobs" aria-live="polite"></section>
+</main>
+<template id="job-template">
+  <article class="job">
+    <header class="job-head">
+      <h2 class="job-name"></h2>
+      <span class="job-state"></span>
+    </header>
+    <p class="job-source"></p>
+    <p class="job-estimate" id="estimate-note"></p>
+    <p class="job-queue" hidden></p>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+      <span class="bar-fill"></span>
+    </div>
+    <p class="job-progress"></p>
+    <p class="job-warning" hidden></p>
+    <p class="job-error" role="alert" hidden></p>
+    <div class="job-actions">
+      <a class="download" hidden>Unduh hasil</a>
+      <button type="button" class="cancel" hidden>Batalkan</button>
+    </div>
+    <details class="job-partial" hidden>
+      <summary>Teks sejauh ini</summary>
+      <pre class="job-partial-text"></pre>
+    </details>
+  </article>
+</template>
+<script src="/app.js"></script>
+</body>
+</html>

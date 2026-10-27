@@ -1,0 +1,30 @@
+[project]
+name = "indo-audio-transcribe"
+version = "0.1.0"
+description = "Turn Indonesian recordings into text — local web app and CLI, CPU only, built on PixelML/sea-asr-id"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "sea-asr",
+  "fastapi",
+  "uvicorn",
+  "python-multipart",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "httpx"]
+
+[project.urls]
+Homepage = "https://github.com/ahsanmubariz/indo-audio-transcribe"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "tests"]
+# The fast suite is the default. Model tests are opted into with `-m slow`.
+addopts = "-m 'not slow' -q"
+markers = [
+  "slow: drives the real PixelML/sea-asr-id model; needs a reference recording and MYTRANSCRIBE_RUN_SLOW=1",
+]
+
+[tool.setuptools.packages.find]
+include = ["mytranscribe*"]
