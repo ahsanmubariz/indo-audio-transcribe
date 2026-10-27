@@ -15,6 +15,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest", "httpx"]
+# The parity suite loads the model in `lm` mode, which needs the language model
+# extra. Kept out of `dev` because its kenlm build is a C++ compile that the fast
+# suite should never force on anyone.
+slow = ["pytest", "httpx", "sea-asr[lm] @ git+https://github.com/PixelML/sea-asr@v0.2.1"]
 
 [project.urls]
 Homepage = "https://github.com/ahsanmubariz/indo-audio-transcribe"

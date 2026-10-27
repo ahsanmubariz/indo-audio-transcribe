@@ -199,10 +199,16 @@ Domain vocabulary (Job, Queue, Worker, Piece, Transcript, Estimate) is in
 ## Development
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
+python3 -m venv .venv
+.venv/bin/pip install --extra-index-url https://download.pytorch.org/whl/cpu -e '.[dev]'
 
 .venv/bin/python -m pytest       # fast suite, ~4 min
 ```
+
+The `--extra-index-url` is not decoration. Without it pip resolves `torch` from
+PyPI and downloads the CUDA build — 1.1 GB instead of 770 MB, plus its `nvidia-*`
+dependencies — for a program that never touches a GPU. `transcribe.sh` pins the same
+index.
 
 `.venv` here has no GPU build and needs no model weights, but it does need the
 `sea-asr` library, because the audio loader and subtitle writers live there. It is
@@ -220,6 +226,15 @@ ships with this repo, because a recording is somebody's speech and its transcrip
 is their words.
 
 Point them at your own:
+
+First install the extra the parity suite needs — `lm` mode decodes with a language
+model, which is a separate C++ build:
+
+```bash
+.venv/bin/pip install --extra-index-url https://download.pytorch.org/whl/cpu -e '.[slow]'
+```
+
+Then point the suite at your own recording:
 
 ```bash
 export MYTRANSCRIBE_REFERENCE_AUDIO=/path/to/recording.mp3

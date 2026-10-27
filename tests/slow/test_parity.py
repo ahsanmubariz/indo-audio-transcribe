@@ -51,6 +51,16 @@ TIMESTAMP_TOLERANCE_MS = 5
 
 # --------------------------------------------------------------- shared work
 
+@pytest.fixture(scope="module", autouse=True)
+def _reference_or_skip():
+    """Skip before any model loads.
+
+    Without this the `asr` fixture can be resolved first, so a missing reference
+    recording surfaces as a 2.8 GB download and an ImportError rather than a skip.
+    """
+    require_reference_audio()
+
+
 @pytest.fixture(scope="module")
 def asr():
     """The real model, loaded once — as the Worker does at startup."""
@@ -176,13 +186,19 @@ def test_pipeline_txt_is_byte_identical_to_the_one_shot_output(runs) -> None:
     assert transcript.text == reference.strip()
 
 
-def test_the_recording_is_cut_into_whole_30_second_pieces(runs) -> None:
-    """Piece count follows from duration; this checks the arithmetic, not a constant."""
-    transcript = runs["txt"]
-    expected = math.ceil(transcript.duration_s / PIECE_SECONDS)
+def test_no_piece_is_longer_than_the_limit(runs) -> None:
+    """Pieces are cut at the quietest moment *before* each 30 s mark, not at it.
 
-    assert transcript.pieces_total == expected
-    assert transcript.pieces_total >= 1
+    So each Piece is at most 30 s, which makes the count a lower bound rather than
+    an exact quotient: a 796 s recording came out as 29 Pieces, not the 27 the
+    arithmetic suggests, because the cut backtracks up to 5 s to find a pause.
+    """
+    transcript = runs["txt"]
+    at_least = math.ceil(transcript.duration_s / PIECE_SECONDS)
+
+    assert transcript.pieces_total >= at_least
+    # Backtracking is bounded by the search window, so the count cannot run away.
+    assert transcript.pieces_total <= math.ceil(transcript.duration_s / (PIECE_SECONDS - 5.0))
 
 
 def test_transcription_completes_under_200_seconds(runs) -> None:

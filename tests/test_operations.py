@@ -404,7 +404,12 @@ def test_the_job_passes_its_own_model_to_the_pipeline(work_dir: Path) -> None:
                 )
             import time
 
-            for _ in range(400):
+            # 20 s of polling, not 8. The Worker runs a real Piece loop against a
+            # tone, and on a loaded machine 8 s was not always enough — the test
+            # then read an empty `seen` and failed for a reason unrelated to what
+            # it asserts.
+            deadline = time.monotonic() + 20.0
+            while time.monotonic() < deadline:
                 jobs = client.get("/api/jobs").json()["jobs"]
                 if jobs and jobs[0]["state"] in {"finished", "failed"}:
                     break
