@@ -5,7 +5,9 @@ description = "Turn Indonesian recordings into text — local web app and CLI, C
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-  "sea-asr",
+  # Not on PyPI; installed from the upstream tag. Keep this in step with
+  # SEA_ASR_REF in transcribe.sh, which is what the CLI actually installs.
+  "sea-asr @ git+https://github.com/PixelML/sea-asr@v0.2.1",
   "fastapi",
   "uvicorn",
   "python-multipart",

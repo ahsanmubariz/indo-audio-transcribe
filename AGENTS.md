@@ -36,12 +36,13 @@ audio's duration specifically to catch this.
 ## Tests
 
 ```bash
-.venv/bin/python -m pytest          # fast, fake transcriber, no model, ~4 min
+.venv/bin/python -m pytest          # fast, fake transcriber, offsets never load, ~4 min
 ```
 
-Everything in the default suite uses a fake transcriber, so it is fast and needs no
-downloads. Keep it that way: new tests should use `tests/fakes.py` unless the real
-model is genuinely what is under test.
+Everything in the default suite injects a fake transcriber, so it never loads the
+weights. It still needs the `sea-asr` library — the audio loader and subtitle
+writers live there — but not the model download. Keep it that way: new tests should
+use `tests/fakes.py` unless the real model is genuinely what is under test.
 
 Real-model tests live in `tests/slow/`, are marked `slow`, and are skipped unless
 `MYTRANSCRIBE_RUN_SLOW=1` and a reference recording are both supplied. Write new

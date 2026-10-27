@@ -201,11 +201,16 @@ Domain vocabulary (Job, Queue, Worker, Piece, Transcript, Estimate) is in
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 
-.venv/bin/python -m pytest       # fast suite, ~4 min, no model needed
+.venv/bin/python -m pytest       # fast suite, ~4 min
 ```
 
-The fast suite drives a fake transcriber, so it runs anywhere and never downloads
-a model.
+`.venv` here has no GPU build and needs no model weights, but it does need the
+`sea-asr` library, because the audio loader and subtitle writers live there. It is
+not on PyPI, so `pyproject.toml` points at the upstream git tag. `./transcribe.sh`
+installs it the same way.
+
+The fast suite drives a fake transcriber, so it never loads the 2.8 GB of weights
+and never downloads a model.
 
 ### The parity suite
 
